@@ -2,9 +2,6 @@
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-#postgres_local_base = 'mysql://root:numan@localhost:3306/'
-postgres_local_base = 'postgresql://postgres:1numan1@localhost/'
-database_name = 'web_chat_task'
 
 class BaseConfig:
     """Base configuration."""
@@ -12,7 +9,7 @@ class BaseConfig:
     SECRET_KEY = 'Secret'
     TOKEN_VAILD_SEC = 86400 #Seconds
     # database settings
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # file upload definitions
     UPLOAD_FOLDER = basedir + '/files'  # top level upload folder # To do sil eger dosya yuklemiceksek
@@ -29,3 +26,6 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""
     DEBUG = True
+
+class ProductionConfig(BaseConfig):
+    DEBUG = False

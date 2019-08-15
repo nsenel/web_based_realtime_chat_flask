@@ -19,7 +19,6 @@ app_settings = os.getenv(
     'config.DevelopmentConfig'
 )
 app.config.from_object(app_settings)
-
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
