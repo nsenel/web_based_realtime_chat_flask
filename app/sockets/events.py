@@ -28,7 +28,7 @@ def handle_my_custom_event():
 
 @socketio.on('disconnect')
 def handle_my_custom_event():
-    if (current_user_list.has_key(request.sid)):
+    if (request.sid in current_user_list):
         logOutUser(current_user_list[request.sid])
         del current_user_list[request.sid]
     print ('disconnected')
