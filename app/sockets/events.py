@@ -8,10 +8,6 @@ actions = { "JOINED": 0, "LEFT":1, "RENAME":2 }
 
 current_user_list = {}
 
-# @section.on('get_all_users')
-# def getAllUsers():
-#     emit('user_list', current_user_list, broadcast=True)
-
 @socketio.on('user_action')
 def actionHandler(message):
     action = message['action']
@@ -32,8 +28,9 @@ def handle_my_custom_event():
 
 @socketio.on('disconnect')
 def handle_my_custom_event():
-    logOutUser(current_user_list[request.sid])
-    del current_user_list[request.sid]
+    if (current_user_list.has_key(request.sid)):
+        logOutUser(current_user_list[request.sid])
+        del current_user_list[request.sid]
     print ('disconnected')
 
 @socketio.on('message')
