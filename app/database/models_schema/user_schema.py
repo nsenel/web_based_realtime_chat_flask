@@ -6,3 +6,6 @@ class UserSchema(Schema):
         ordered      = True
         user_id      = fields.Int()
         user_name    = fields.Str()
+        user_mail    = fields.Str()
+        user_age     = fields.Int()
+        user_city    = fields.Str()

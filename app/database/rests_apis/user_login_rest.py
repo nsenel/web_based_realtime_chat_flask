@@ -29,9 +29,9 @@ def login_api():
     # get the post data
     post_data = request.get_json()
     # fetch the user data
-    user = User.query.filter_by(email=post_data.get('email')).first()
+    user = User.query.filter_by(email=post_data.get('user_mail')).first()
     if (user):
-        pwd_valid = user.validate_password(post_data.get('password'))
+        pwd_valid = user.validate_password(post_data.get('user_password'))
         if pwd_valid:
             # Update login flag if user name and password are correct
             user.logged_in = True
@@ -45,19 +45,22 @@ def login_api():
                     'message': 'Successfully logged in.',
                     'auth_token': auth_token.decode()
                 }
+                print(responseObject)
                 return make_response(jsonify(responseObject)), 200
     responseObject = {
         'status': 'Fail',
         'message': 'Email address or password is not correct!'
     }
+    print(responseObject)
     return make_response(jsonify(responseObject)), 403
 
 # User status and check if logged in
-@app.route(url_prefix + '/auth/status', methods=['GET'])
-@token_auth.login_required
+@app.route(url_prefix + '/auth/status', methods=['POST'])
+# @token_auth.login_required
 def user_api():
     # get the auth token
-    auth_header = request.headers.get('Authorization')
+    post_data = request.get_json()
+    auth_header = post_data.get('Authorization')
     if auth_header:
         try:
             auth_token = auth_header.split(" ")[1]
@@ -85,11 +88,51 @@ def user_api():
         }
         return make_response(jsonify(responseObject)), 403
 
+# User status and check if logged in
+@app.route(url_prefix + '/auth/user_info', methods=['POST'])
+@token_auth.login_required
+def update_user():
+    # get the auth token
+    post_data = request.get_json()
+    auth_header = post_data.get('Authorization')
+    updated_user = post_data.get('user')
+    if auth_header:
+        try:
+            auth_token = auth_header.split(" ")[1]
+        except IndexError:
+            responseObject = {
+                'status': 'Fail',
+                'message': 'Bearer token malformed.'
+            }
+            return make_response(jsonify(responseObject)), 401
+    if auth_token:
+        resp = User.decode_auth_token(auth_token)
+        if not isinstance(resp, str):
+            user = User.query.filter_by(user_id=resp).first()
+            user = updated_user
+            db.session.merge(user)
+            db.session.commit()
+            result, error = UserSchema().dump(user, many=False)
+            return make_response(jsonify(result)), 200
+        responseObject = {
+            'status': 'Fail',
+            'message': resp
+        }
+        return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'Fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 403
+
 # User logout
 @app.route(url_prefix + '/auth/logout', methods=['POST'])
 def logout_api():
-    # get auth token
-    auth_header = request.headers.get('Authorization')
+    auth_token = ""
+    
+    post_data = request.get_json()
+    auth_header = post_data.get('Authorization')
     if auth_header:
         try:
             auth_token = auth_header.split(" ")[1]

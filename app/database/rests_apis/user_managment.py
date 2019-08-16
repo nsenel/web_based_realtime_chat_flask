@@ -2,7 +2,6 @@ from validate_email import validate_email
 from flask import Flask, request, make_response, jsonify
 from flask_httpauth import HTTPTokenAuth
 
-
 from app import app, db
 from app.database.models.user import User
 from app.database.models.user_actions import UserAction
@@ -20,7 +19,7 @@ def register_api():
     # get the post data
     post_data = request.get_json()
     # Check if mail address is valid
-    if not(validate_email(post_data.get('email'))):
+    if not(validate_email(post_data.get('user_mail'))):
         responseObject = {
             'status': 'Fail',
             'message': "Please enter valid mail adress"
@@ -29,7 +28,7 @@ def register_api():
     # Database process
     try:
         user_name = User.query.filter_by(user_name=post_data.get('user_name')).first()
-        user_email = User.query.filter_by(email=post_data.get('email')).first()
+        user_email = User.query.filter_by(email=post_data.get('user_mail')).first()
         # If user name already exits return Fail
         if (user_name or user_email):
             responseObject = {
@@ -40,10 +39,10 @@ def register_api():
         else:
             # create user
             user_name = post_data.get('user_name')
-            email = post_data.get('email')
-            user_pwd = post_data.get('password')
-            age = post_data.get('age')
-            city = post_data.get('city')
+            email = post_data.get('user_mail')
+            user_pwd = post_data.get('user_password')
+            age = post_data.get('user_age')
+            city = post_data.get('user_city')
             user = User(user_name, email, user_pwd, age, city)
             # add user to database
             db.session.add(user)
@@ -63,7 +62,7 @@ def register_api():
 
 # Get all loged in users
 @app.route(url_prefix + '/auth/user_list', methods=['GET'])
-@token_auth.login_required
+#@token_auth.login_required
 def get_user_list():
     # Select all users which is currently logedin
     logged_in_users = UserAction.query.filter_by(login=True).all()

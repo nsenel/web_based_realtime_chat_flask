@@ -45,6 +45,6 @@ def handle_message(message):
         message['content'] = message['content'] + getEmotionDetection(message['content'])
     emit('message',message, broadcast=True)
 
-def logoutUser(action_row_id):
+def logOutUser(action_row_id):
     user_action_obj = database.UserActionInterface()
     user_action_obj.logOutUser(action_row_id)
