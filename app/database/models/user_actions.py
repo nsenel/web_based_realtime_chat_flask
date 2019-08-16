@@ -17,7 +17,7 @@ class UserAction(db.Model):
     logout_time = db.Column(db.TIMESTAMP,  nullable=True)
 
     user_relation = relationship(User, primaryjoin=user_id == User.user_id)
-# To do numan remove
+
     def __init__(self, user_id, login=True):
         self.user_id = user_id
         self.login = login
