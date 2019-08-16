@@ -109,11 +109,19 @@ def update_user():
         resp = User.decode_auth_token(auth_token)
         if not isinstance(resp, str):
             user = User.query.filter_by(user_id=resp).first()
-            user = updated_user
+            user.user_name = updated_user['user_name']
+            user.email = updated_user['email']
+            user.age = updated_user['age']
+            user.city = updated_user['city']
             db.session.merge(user)
             db.session.commit()
             result, error = UserSchema().dump(user, many=False)
-            return make_response(jsonify(result)), 200
+            responseObject = {
+                'status': 'Success',
+                'message': 'Successfully updated!',
+                'user': result
+            }
+            return make_response(jsonify(responseObject)), 200
         responseObject = {
             'status': 'Fail',
             'message': resp
