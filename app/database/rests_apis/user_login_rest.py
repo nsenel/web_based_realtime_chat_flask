@@ -55,12 +55,11 @@ def login_api():
     return make_response(jsonify(responseObject)), 403
 
 # User status and check if logged in
-@app.route(url_prefix + '/auth/status', methods=['POST'])
-# @token_auth.login_required
+@app.route(url_prefix + '/auth/status', methods=['GET'])
+@token_auth.login_required
 def user_api():
     # get the auth token
-    post_data = request.get_json()
-    auth_header = post_data.get('Authorization')
+    auth_header = request.headers.get('Authorization')
     if auth_header:
         try:
             auth_token = auth_header.split(" ")[1]
@@ -88,59 +87,12 @@ def user_api():
         }
         return make_response(jsonify(responseObject)), 403
 
-# User status and check if logged in
-@app.route(url_prefix + '/auth/user_info', methods=['POST'])
-@token_auth.login_required
-def update_user():
-    # get the auth token
-    post_data = request.get_json()
-    auth_header = post_data.get('Authorization')
-    updated_user = post_data.get('user')
-    if auth_header:
-        try:
-            auth_token = auth_header.split(" ")[1]
-        except IndexError:
-            responseObject = {
-                'status': 'Fail',
-                'message': 'Bearer token malformed.'
-            }
-            return make_response(jsonify(responseObject)), 401
-    if auth_token:
-        resp = User.decode_auth_token(auth_token)
-        if not isinstance(resp, str):
-            user = User.query.filter_by(user_id=resp).first()
-            user.user_name = updated_user['user_name']
-            user.email = updated_user['email']
-            user.age = updated_user['age']
-            user.city = updated_user['city']
-            db.session.merge(user)
-            db.session.commit()
-            result, error = UserSchema().dump(user, many=False)
-            responseObject = {
-                'status': 'Success',
-                'message': 'Successfully updated!',
-                'user': result
-            }
-            return make_response(jsonify(responseObject)), 200
-        responseObject = {
-            'status': 'Fail',
-            'message': resp
-        }
-        return make_response(jsonify(responseObject)), 401
-    else:
-        responseObject = {
-            'status': 'Fail',
-            'message': 'Provide a valid auth token.'
-        }
-        return make_response(jsonify(responseObject)), 403
-
 # User logout
-@app.route(url_prefix + '/auth/logout', methods=['POST'])
+@app.route(url_prefix + '/auth/logout', methods=['GET'])
+@token_auth.login_required
 def logout_api():
-    auth_token = ""
-    
     post_data = request.get_json()
-    auth_header = post_data.get('Authorization')
+    auth_header = request.headers.get('Authorization')
     if auth_header:
         try:
             auth_token = auth_header.split(" ")[1]

@@ -39,5 +39,4 @@ class UserActionInterface:
         UserAction.query.filter_by(user_id=user_action.user_id).update({'login': False})
         user_action.logout_time = datetime.datetime.utcnow()
         user_action.login = False
-        #db.session.merge(user_action)
         db.session.commit()
