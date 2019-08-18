@@ -3,7 +3,6 @@
 from flask import Flask, request, make_response, jsonify
 from flask_httpauth import HTTPTokenAuth
 
-
 from app import app, db
 from app.database.models.user import User, BlacklistToken
 from app.database.models_schema.user_schema import UserSchema
@@ -18,7 +17,6 @@ def verify_token(token):
     resp = User.decode_auth_token(token)
     if not isinstance(resp, str):
         user = User.query.filter_by(user_id=resp).first()
-        print (user)
         if user:
             return True
     return False
@@ -52,7 +50,7 @@ def login_api():
         'message': 'Email address or password is not correct!'
     }
     print(responseObject)
-    return make_response(jsonify(responseObject)), 403
+    return make_response(jsonify(responseObject)), 203
 
 # User status and check if logged in
 @app.route(url_prefix + '/auth/status', methods=['GET'])
@@ -91,7 +89,6 @@ def user_api():
 @app.route(url_prefix + '/auth/logout', methods=['GET'])
 @token_auth.login_required
 def logout_api():
-    post_data = request.get_json()
     auth_header = request.headers.get('Authorization')
     if auth_header:
         try:

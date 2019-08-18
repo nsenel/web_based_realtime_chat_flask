@@ -24,7 +24,6 @@ def desideEmoji(tones):
     return emotion_text[selected_motion]
     
 def getEmotionDetection(text_content):
-
     tone_analysis = tone_analyzer.tone(
         {'text': text_content},
         content_type='application/json'

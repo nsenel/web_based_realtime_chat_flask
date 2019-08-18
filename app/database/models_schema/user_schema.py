@@ -9,3 +9,4 @@ class UserSchema(Schema):
         email        = fields.Str()
         age          = fields.Int()
         city         = fields.Str()
+

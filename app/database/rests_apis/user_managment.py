@@ -11,11 +11,8 @@ from .user_login_rest import token_auth
 
 url_prefix = app.config.get('REST_URL_PREFIX')
 
-
 @app.route(url_prefix + '/auth/register', methods=['POST'])
 def register_api():
-    # get the auth token
-    auth_token = request.headers.get('Authorization')
     # get the post data
     post_data = request.get_json()
     # Check if mail address is valid
@@ -65,8 +62,8 @@ def register_api():
 @token_auth.login_required
 def update_user():
     # get the auth token
-    auth_header = request.headers.get('Authorization')
     updated_user = request.get_json()
+    auth_header = request.headers.get('Authorization')
     if auth_header:
         try:
             auth_token = auth_header.split(" ")[1]
@@ -80,10 +77,10 @@ def update_user():
         resp = User.decode_auth_token(auth_token)
         if not isinstance(resp, str):
             user = User.query.filter_by(user_id=resp).first()
-            user.user_name = updated_user['user_name']
-            user.email = updated_user['email']
-            user.age = updated_user['age']
-            user.city = updated_user['city']
+            user.user_name = updated_user.get('user_name')
+            user.email = updated_user.get('email')
+            user.age = updated_user.get('age')
+            user.city = updated_user.get('city')
             db.session.merge(user)
             db.session.commit()
             result, error = UserSchema().dump(user, many=False)
