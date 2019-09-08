@@ -2,7 +2,6 @@ from flask import session, request
 from flask_socketio import emit, send, join_room, leave_room
 from .. import socketio
 from .. import database
-from .emotion_detection import getEmotionDetection
 
 actions = { "JOINED": 0, "LEFT":1, "RENAME":2 }
 
@@ -39,7 +38,6 @@ def handle_message(message):
         actionHandler(message)
     if 'content' in message:
         print(message)
-        message['content'] = message['content'] + getEmotionDetection(message['content'])
     emit('message',message, broadcast=True)
 
 def logOutUser(action_row_id):
