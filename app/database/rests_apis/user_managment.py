@@ -83,7 +83,7 @@ def update_user():
             user.city = updated_user.get('city')
             db.session.merge(user)
             db.session.commit()
-            result, error = UserSchema().dump(user, many=False)
+            result = UserSchema().dump(user, many=False)
             responseObject = {
                 'status': 'Success',
                 'message': 'Successfully updated!',
@@ -110,5 +110,5 @@ def get_user_list():
     logged_in_users = UserAction.query.filter_by(login=True).all()
     # list comprehension for geting related users(forein key)
     users = [logged_in_user.user_relation for logged_in_user in logged_in_users]
-    result, error = UserSchema().dump(users, many=True)
+    result = UserSchema().dump(users, many=True)
     return make_response(jsonify(result)), 200

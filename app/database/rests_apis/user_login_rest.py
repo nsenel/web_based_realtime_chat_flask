@@ -71,7 +71,7 @@ def user_api():
         resp = User.decode_auth_token(auth_token)
         if not isinstance(resp, str):
             user = User.query.filter_by(user_id=resp).first()
-            result, error = UserSchema().dump(user, many=False)
+            result = UserSchema().dump(user, many=False)
             return make_response(jsonify(result)), 200
         responseObject = {
             'status': 'Fail',
