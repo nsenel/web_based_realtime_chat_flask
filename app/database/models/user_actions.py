@@ -2,6 +2,7 @@ from app import app, db
 from sqlalchemy import ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 import datetime
+from app.database.models_schema.user_schema import UserSchema
 from app.database.models.user import User
 import datetime
 
@@ -24,19 +25,17 @@ class UserAction(db.Model):
         self.login_time = datetime.datetime.utcnow()
 
 class UserActionInterface:
-    def __init__(self):
-        pass
-    
-    def saveNewLogin(self, user_id):
-        user_action = UserAction(user_id)
+    def __init__(self, user_id):
+        self.user = User.query.filter_by(user_id=user_id).first()
+
+    def get_user_info(self):
+        return UserSchema().dump(self.user, many=False)
+
+    def save_new_login(self):
+        user_action = UserAction(self.user.user_id)
         db.session.add(user_action)
-        db.session.flush()
         db.session.commit()
-        return user_action.action_id
     
-    def logOutUser(self, action_id):
-        user_action = UserAction.query.filter_by(action_id=action_id).first()
-        UserAction.query.filter_by(user_id=user_action.user_id).update({'login': False})
-        user_action.logout_time = datetime.datetime.utcnow()
-        user_action.login = False
+    def log_out_user(self):
+        UserAction.query.filter_by(user_id=self.user.user_id).update({'login': False,'logout_time': datetime.datetime.utcnow()})
         db.session.commit()
