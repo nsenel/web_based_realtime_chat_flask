@@ -1,4 +1,4 @@
-<b>Welcome to Fancy Chat Application!
+# ChatRoom(https://web-chat-angular.herokuapp.com)
 
 You can register and login to the application. In the chat room you can send, receive messages, view logged in users information from user list, update your profile and see your message mood if you give positive energy to your chat mates.
 
