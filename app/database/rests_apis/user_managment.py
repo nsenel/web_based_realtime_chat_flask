@@ -13,6 +13,7 @@ url_prefix = app.config.get('REST_URL_PREFIX')
 
 @app.route(url_prefix + '/auth/register', methods=['POST'])
 def register_api():
+    """ Creates new row in User table """
     # get the post data
     post_data = request.get_json()
     # Check if mail address is valid
@@ -57,10 +58,10 @@ def register_api():
         }
         return make_response(jsonify(responseObject)), 503
 
-# User status and check if logged in
 @app.route(url_prefix + '/auth/user_info', methods=['POST'])
 @token_auth.login_required
 def update_user():
+    """ Updates user related informations """
     # get the auth token
     updated_user = request.get_json()
     auth_header = request.headers.get('Authorization')
@@ -106,6 +107,7 @@ def update_user():
 @app.route(url_prefix + '/auth/user_list', methods=['GET'])
 @token_auth.login_required
 def get_user_list():
+    """ Get current loged users """
     # Select all users which is currently logedin
     logged_in_users = UserAction.query.filter_by(login=True).all()
     # list comprehension for geting related users(forein key)

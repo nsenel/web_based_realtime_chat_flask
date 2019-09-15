@@ -9,7 +9,7 @@ actions = { "JOINED": 0, "LEFT":1, "RENAME":2 }
 def action_handler(user_connected):
     user_action = actions['LEFT']
     user_action_obj = database.UserActionInterface(session['user_id'])
-    # Save user in action table
+    # Save user login information in action table
     if (user_connected):
         user_action = actions['JOINED']
         user_action_obj.save_new_login()

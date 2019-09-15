@@ -14,6 +14,7 @@ test_token = app.config.get('TEST_TOKEN')
 
 @token_auth.verify_token
 def verify_token(token):
+    """ Verify user token """
     resp = User.decode_auth_token(token)
     if not isinstance(resp, str):
         user = User.query.filter_by(user_id=resp).first()
