@@ -8,7 +8,6 @@ actions = { "JOINED": 0, "LEFT":1, "RENAME":2 }
 @socketio.on('user_action')
 def action_handler(user_connected):
     user_action = actions['LEFT']
-    print('action_handler session:', session)
     user_action_obj = database.UserActionInterface(session['user_id'])
     # Save user in action table
     if (user_connected):
@@ -22,9 +21,7 @@ def action_handler(user_connected):
 @socketio.on('connect')
 def on_connect():
     if(request.args.get('user_id') is not None): # Client should provide user_id
-        print('args: ', request.args.get('user_id'))
         session['user_id'] = request.args.get('user_id')
-        print('on_connect session[user_id]: ', session['user_id'])
         action_handler(user_connected = True)
 
 @socketio.on('disconnect')
