@@ -14,6 +14,7 @@ server_url: 'http://localhost:5000',
 For web backend heroku db conenction:
 
 web_based_chat_app_backend/config.py Update postgres_local_base ( "postgres://”user_name”:”password”@localhost/web_chat_task").
+
 web_based_chat_app_backend/create_db.py Update engine ( "postgres://”user_name”:”password”@localhost/web_chat_task").
 
 
