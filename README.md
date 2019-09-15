@@ -12,13 +12,19 @@ web_based_chat_app_frontend/src/environments/environment.ts
 server_url: 'http://localhost:5000',
 
 For web backend heroku db conenction:
-web_based_chat_app_backend/config.py Update postgres_local_base ( "postgres://”user_name”:”password”@localhost/web_chat_task"). web_based_chat_app_backend/create_db.py Update engine ( "postgres://”user_name”:”password”@localhost/web_chat_task").
+
+web_based_chat_app_backend/config.py Update postgres_local_base ( "postgres://”user_name”:”password”@localhost/web_chat_task").
+web_based_chat_app_backend/create_db.py Update engine ( "postgres://”user_name”:”password”@localhost/web_chat_task").
+
 
 To setup and run Backend locally:
+
 Install Python 3.7
+
 python -m env env cd env/Scripts/activate
-cd ..
-cd ..
+
 pip install -r requirements.txt
+
 python create_db.py
+
 python app.py
